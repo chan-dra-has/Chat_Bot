@@ -12,16 +12,42 @@ client = Groq(
     api_key=api_key
 )
 
-response = client.chat.completions.create(
-    model="openai/gpt-oss-20b",
-  messages=[
+
+messages = [
     {
-        "role": "user",
-        "content": "Explain what an LLM is in simple words."
+        "role": "system",
+        "content": "You are a helpful assistant."
+    }
+]
+
+
+while True:
+
+    user_input = input("You: ")
+
+    if user_input.lower() == "exit":
+        print("Chat ended.")
+        break
+
+    messages.append(
+        {
+            "role": "user",
+            "content": user_input
         }
-    ]
-)
+    )
 
-answer = response.choices[0].message.content
+    response = client.chat.completions.create(
+        model="openai/gpt-oss-20b",
+        messages=messages
+    )
 
-print(answer)
+    answer = response.choices[0].message.content
+
+    print("AI:", answer)
+
+    messages.append(
+        {
+            "role": "assistant",
+            "content": answer
+        }
+    )
